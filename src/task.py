@@ -1,5 +1,5 @@
 import time
-from typing import Optional, List, Dict, Any
+from typing import Optional, Any
 from enum import Enum
 
 from src.descriptors import ValidatedAttribute
@@ -17,7 +17,7 @@ class Priority(Enum):
         return self.value
 
     @classmethod
-    def values(cls) -> List[str]:
+    def values(cls) -> list[str]:
         """Список всех допустимых значений"""
         return [p.value for p in cls]
 
@@ -34,7 +34,7 @@ class Status(Enum):
         return self.value
 
     @classmethod
-    def values(cls) -> List[str]:
+    def values(cls) -> list[str]:
         """Список всех допустимых значений"""
         return [s.value for s in cls]
 
@@ -83,6 +83,7 @@ class Task:
 
     Атрибуты (прямое хранение):
         _created_at: Время создания (неизменяемо)
+        payload: Произвольные данные задачи (из первой лабы)
 
     Вычисляемые свойства (property):
         created_at: Время создания (только для чтения)
@@ -101,14 +102,13 @@ class Task:
     priority = ValidatedAttribute(validate_priority)
     status = ValidatedAttribute(validate_status)
 
-    def __init__(self, id: str, description: str, priority: str = "обычный"):
+    def __init__(self, id: str, payload: Any):
         """
         Инициализация задачи
 
         Args:
             id: Уникальный идентификатор (нельзя изменить потом)
-            description: Описание задачи
-            priority: Приоритет: "низкий", "обычный", "высокий" или объект Priority
+            payload: Произвольные данные задачи
 
         Raises:
             TaskValidationError: При некорректных значениях
@@ -116,13 +116,20 @@ class Task:
         try:
             # Устанавливаем значения через дескрипторы (валидация происходит здесь)
             self.id = id
-            self.description = description
 
-            if isinstance(priority, Priority):
-                self.priority = priority.value
+            self.payload = payload
+
+            if 'description' in payload:
+                self.description = payload['description']
             else:
-                self.priority = priority
+                self.description = f"Задача {id}"
 
+            if 'priority' in payload:
+                self.priority = payload['priority']
+            else:
+                self.priority = "обычный"
+
+            # status: всегда начинается с "не начата"
             self.status = Status.PENDING.value
 
             # Приватные атрибуты
@@ -246,7 +253,7 @@ class Task:
             )
         self.status = Status.CANCELLED.value
 
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Получить полную информацию о задаче."""
         return {
             'id': self.id,
@@ -261,13 +268,16 @@ class Task:
             'can_start': self.can_start,
             'is_active': self.is_active,
             'is_finished': self.is_finished,
+            'payload': self.payload,
         }
 
     # --- Магические методы ---
 
     def __str__(self) -> str:
+        payload_info = f", payload: {type(self.payload).__name__}" if self.payload is not None else ""
         return (f"Задача [{self.id}]\n"
                 f"  Описание: {self.description}\n"
                 f"  Статус: {self.status}\n"
                 f"  Приоритет: {self.priority}\n"
-                f"  Возраст: {self.age:.1f} сек")
+                f"  Возраст: {self.age:.1f} сек\n"
+                f"{payload_info}")
