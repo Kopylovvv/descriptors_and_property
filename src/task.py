@@ -274,10 +274,9 @@ class Task:
     # --- Магические методы ---
 
     def __str__(self) -> str:
-        payload_info = f", payload: {type(self.payload).__name__}" if self.payload is not None else ""
-        return (f"Задача [{self.id}]\n"
-                f"  Описание: {self.description}\n"
-                f"  Статус: {self.status}\n"
-                f"  Приоритет: {self.priority}\n"
-                f"  Возраст: {self.age:.1f} сек\n"
-                f"{payload_info}")
+        return (f"Задача [{self.id}]:\n"
+                f"Описание: {self.description}\n"
+                f"Статус: {self.status}\n"
+                f"Приоритет: {self.priority}\n"
+                f"Возраст: {self.age:.1f} сек\n"
+                f"payload: {self.payload}")
