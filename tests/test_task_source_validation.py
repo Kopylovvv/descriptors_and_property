@@ -1,5 +1,5 @@
-from src.sources import FileTaskSource
-from src.validation import validate_task_source
+from src.task_sources.file_task_source import FileTaskSource
+from src.task_sources.validation import validate_task_source
 
 
 def test_task_source_validation():

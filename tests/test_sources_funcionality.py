@@ -1,5 +1,7 @@
-from src.sources import FileTaskSource, RandomTaskSource, APITaskSource
-from src.sources import Task
+from src.task_sources.file_task_source import FileTaskSource
+from src.task_sources.random_task_source import RandomTaskSource
+from src.task_sources.api_task_source import APITaskSource
+from src.task import Task
 
 
 def test_sources_functionality():

@@ -2,19 +2,6 @@ from src.protocol import TaskSource
 from src.task import Task
 
 
-def is_task_source(obj) -> bool:
-    """
-    Проверка, реализует ли объект контракт TaskSource.
-
-    Args:
-        obj: Проверяемый объект
-
-    Returns:
-        bool: True, если объект реализует контракт TaskSource
-    """
-    return isinstance(obj, TaskSource)
-
-
 def validate_task_source(source) -> bool:
     """
     Валидация источника задач с проверкой метода get_tasks.
@@ -28,7 +15,8 @@ def validate_task_source(source) -> bool:
     Raises:
         TypeError: Если источник не реализует контракт
     """
-    if not is_task_source(source):
+    # Проверка, реализует ли объект контракт TaskSource
+    if not isinstance(source, TaskSource):
         raise TypeError(f"Объект {type(source).__name__} не реализует контракт TaskSource")
 
     # Проверка наличия метода
