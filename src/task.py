@@ -1,74 +1,9 @@
 import time
 from typing import Optional, Any
-from enum import Enum
 
 from src.descriptors import ValidatedAttribute
-from src.validators import validate_string
+from src.validators import validate_string, validate_priority, validate_status, Status, Priority
 from src.exceptions import TaskValidationError, InvalidTaskStateError
-
-
-class Priority(Enum):
-    """Приоритеты задачи"""
-    LOW = "низкий"
-    MEDIUM = "обычный"
-    HIGH = "высокий"
-
-    def __str__(self):
-        return self.value
-
-    @classmethod
-    def values(cls) -> list[str]:
-        """Список всех допустимых значений"""
-        return [p.value for p in cls]
-
-
-class Status(Enum):
-    """Статусы задачи"""
-    PENDING = "не начата"
-    IN_PROGRESS = "в работе"
-    COMPLETED = "завершена"
-    CANCELLED = "отменена"
-    FAILED = "провалена"
-
-    def __str__(self):
-        return self.value
-
-    @classmethod
-    def values(cls) -> list[str]:
-        """Список всех допустимых значений"""
-        return [s.value for s in cls]
-
-
-def validate_priority(value):
-    """Валидатор для приоритета"""
-    if isinstance(value, Priority):
-        return value.value
-
-    if not isinstance(value, str):
-        raise TypeError(f"Ожидается строка или Priority, получен {type(value).__name__}")
-
-    if value not in Priority.values():
-        raise ValueError(
-            f"Приоритет должен быть одним из: {', '.join(Priority.values())}. "
-            f"Получен: '{value}'"
-        )
-    return value
-
-
-def validate_status(value):
-    """Валидатор для статуса"""
-    if isinstance(value, Status):
-        return value.value
-
-    if not isinstance(value, str):
-        raise TypeError(f"Ожидается строка или Status, получен {type(value).__name__}")
-
-    if value not in Status.values():
-        raise ValueError(
-            f"Статус должен быть одним из: {', '.join(Status.values())}. "
-            f"Получен: '{value}'"
-        )
-    return value
 
 
 class Task:
